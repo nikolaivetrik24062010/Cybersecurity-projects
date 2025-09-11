@@ -1,45 +1,55 @@
-SOC Lab – Splunk Log Analysis
+# SOC Lab – Splunk Log Analysis
 
 This project demonstrates the process of setting up a Splunk Enterprise environment on macOS, ingesting Linux authentication logs, and analyzing brute-force attempts through search queries and visualizations.
 
-🔹 1. Splunk Installation (macOS)
-	•	Downloaded Splunk Enterprise 10.0.0 from Splunk Downloads.
-	•	Selected macOS (Intel) .dmg package for easy installation.
-	•	Installed via drag-and-drop and ran Splunk for the first time.
-	•	Created the administrator account in the terminal (first-time setup).
- 
-<img width="1352" height="878" alt="Снимок экрана 2025-09-10 в 5 32 57 PM" src="https://github.com/user-attachments/assets/683a3ab5-c818-411d-9c7a-74bbd34eafce" />
+---
 
-📸 Screenshots included:
-	•	Download page (Splunk 10.0.0 for macOS).
-	•	First startup with admin account creation.
+## 1. Splunk Installation (macOS)
 
-<img width="1352" height="878" alt="Снимок экрана 2025-09-10 в 5 40 17 PM" src="https://github.com/user-attachments/assets/a5724b1f-9798-46f0-8f88-375e7e8c1981" />
+- Downloaded Splunk Enterprise 10.0.0 from Splunk Downloads.  
+- Selected macOS (Intel) .dmg package for easy installation.  
+- Installed via drag-and-drop and ran Splunk for the first time.  
+- Created the administrator account in the terminal (first-time setup).
+  
+**Screenshots included:**
 
-🔹 2. Dataset Collection
-	•	Source: SecRepo.com – Security Datasets.
-	•	Downloaded auth.log.gz (≈86k SSH login events).
-	•	Dataset contains failed login attempts, invalid usernames, and SSH brute-force attempts from different IP addresses.
+<img width="1352" height="878" alt="Снимок экрана 2025-09-10 в 5 32 57 PM" src="https://github.com/user-attachments/assets/683a3ab5-c818-411d-9c7a-74bbd34eafce" />
 
-📸 Screenshots included:
-	•	SecRepo dataset page.
- 
-<img width="1352" height="878" alt="Снимок экрана 2025-09-10 в 5 43 03 PM" src="https://github.com/user-attachments/assets/9b0410b3-89d3-48ca-9a68-61441e1e099d" />
+- Download page (Splunk 10.0.0 for macOS).  
+- First startup with admin account creation.
 
-🔹 3. Data Ingestion in Splunk
-	•	Uploaded auth.log.gz via Add Data → Upload Files.
-	•	Set Source Type = linux_secure (Splunk preset for Linux auth logs).
-	•	Indexed and verified timestamps/events were parsed correctly.
+<img width="1352" height="878" alt="Снимок экрана 2025-09-10 в 5 40 17 PM" src="https://github.com/user-attachments/assets/a5724b1f-9798-46f0-8f88-375e7e8c1981" />
 
-📸 Screenshots included:
-	•	Set Source Type (linux_secure).
-	•	Event preview in Splunk.
+---
 
-<img width="1352" height="878" alt="Снимок экрана 2025-09-10 в 5 50 59 PM" src="https://github.com/user-attachments/assets/3b1325f8-49cd-40f4-bc6a-b2c6cf0389f5" />
+## 2. Dataset Collection
 
-🔹 4. Log Search & Analysis
+- Source: SecRepo.com – Security Datasets.  
+- Downloaded `auth.log.gz` (≈86k SSH login events).  
+- Dataset contains failed login attempts, invalid usernames, and SSH brute-force attempts from different IP addresses.
 
-Query 1: Search all events
+**Screenshot:**
+
+<img width="1352" height="878" alt="Снимок экрана 2025-09-10 в 5 43 03 PM" src="https://github.com/user-attachments/assets/9b0410b3-89d3-48ca-9a68-61441e1e099d" />
+
+---
+
+## 3. Data Ingestion in Splunk
+
+- Uploaded `auth.log.gz` via **Add Data → Upload Files**.  
+- Set **Source Type = `linux_secure`** (Splunk preset for Linux auth logs).  
+- Indexed and verified timestamps/events were parsed correctly.
+
+**Screenshots included:**
+- Set Source Type (`linux_secure`).  
+- Event preview in Splunk.
+
+<img width="1352" height="878" alt="Снимок экрана 2025-09-10 в 5 50 59 PM" src="https://github.com/user-attachments/assets/3b1325f8-49cd-40f4-bc6a-b2c6cf0389f5" />
+
+---
+## 4. Log Search & Analysis
+
+- Query 1: Search all events
 
 index=* sourcetype=linux_secure
 
@@ -47,7 +57,7 @@ index=* sourcetype=linux_secure
 
 ✅ Result: 86,839 events indexed.
 
-Query 2: Detect failed logins
+- Query 2: Detect failed logins
 
 index=* sourcetype=linux_secure "Failed password"
 
@@ -55,7 +65,7 @@ index=* sourcetype=linux_secure "Failed password"
 
 ✅ Extracted failed login attempts.
 
-Query 3: Detect invalid users
+- Query 3: Detect invalid users
 
 index=* sourcetype=linux_secure "Invalid user"
 
@@ -63,7 +73,7 @@ index=* sourcetype=linux_secure "Invalid user"
 
 ✅ Extracted brute-force attempts with random usernames.
 
-Query 4: Parse IPs and usernames
+- Query 4: Parse IPs and usernames
 
 index=* sourcetype=linux_secure "Invalid user"
 | rex "Invalid user (?<username>\w+) from (?<src_ip>[^\s]+)"
@@ -95,7 +105,5 @@ src_ip	username	count
 	•	Create a dashboard to visualize top attacker IPs and usernames.
 	•	Build an alert for >10 failed logins from the same IP within 1 minute.
 	•	Enrich attacker IPs with Threat Intelligence feeds (e.g., AbuseIPDB).
-
-
 
 ✅ This README shows a complete end-to-end lab: from setting up SIEM to analyzing a real-world dataset of attacks.
