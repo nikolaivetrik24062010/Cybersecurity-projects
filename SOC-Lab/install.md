@@ -49,38 +49,64 @@ This project demonstrates the process of setting up a Splunk Enterprise environm
 ---
 ## 4. Log Search & Analysis
 
-- Query 1: Search all events
+- ### Query 1: Search all events
 
-index=* sourcetype=linux_secure
+`index=* sourcetype=linux_secure`
 
 <img width="1352" height="878" alt="Снимок экрана 2025-09-10 в 6 48 49 PM" src="https://github.com/user-attachments/assets/899af5bb-dd44-4095-8e24-09eb750d120d" />
 
 ✅ Result: 86,839 events indexed.
 
-- Query 2: Detect failed logins
+- ### Query 2: Detect failed logins
 
-index=* sourcetype=linux_secure "Failed password"
+`index=* sourcetype=linux_secure "Failed password"`
 
 <img width="1352" height="878" alt="Снимок экрана 2025-09-10 в 6 50 31 PM" src="https://github.com/user-attachments/assets/35d8a4af-b825-4fcb-bd05-d9a167007e73" />
 
 ✅ Extracted failed login attempts.
 
-- Query 3: Detect invalid users
+- ### Query 3: Detect invalid users
 
-index=* sourcetype=linux_secure "Invalid user"
+`index=* sourcetype=linux_secure "Invalid user"`
 
 <img width="1352" height="878" alt="Снимок экрана 2025-09-10 в 5 57 34 PM" src="https://github.com/user-attachments/assets/f70d1382-2d8e-4142-a255-a53d34d8cf73" />
 
 ✅ Extracted brute-force attempts with random usernames.
 
-- Query 4: Parse IPs and usernames
+- ### Query 4: Parse IPs and usernames
 
-index=* sourcetype=linux_secure "Invalid user"
+`index=* sourcetype=linux_secure "Invalid user"
 | rex "Invalid user (?<username>\w+) from (?<src_ip>[^\s]+)"
 | stats count by src_ip, username
-| sort - count
+| sort - count`
 
 <img width="1352" height="878" alt="Снимок экрана 2025-09-10 в 6 06 16 PM" src="https://github.com/user-attachments/assets/76b5ec45-8de5-4bfd-971f-95d485dc37ef" />
+
+✅ Aggregated table of attacker IPs and targeted usernames.
+Example result:
+
+src_ip	username	count
+123.57.51.31	admin	360
+188.87.35.25	test	96
+220.99.93.50	nagios	65
+
+📸 Screenshots included:
+	•	Query execution.
+	•	Table view with top brute-force IPs.
+
+🔹 5. Skills Demonstrated
+	•	SIEM setup: Installed and configured Splunk Enterprise on macOS.
+	•	Log ingestion: Indexed Linux authentication logs from external dataset.
+	•	Log parsing & extraction: Applied Splunk Search Processing Language (SPL) with regex.
+	•	Threat analysis: Identified brute-force attempts and attacker infrastructure.
+	•	SOC workflow: Simulated SOC process from ingestion → detection → reporting.
+
+🔹 6. Next Steps
+	•	Create a dashboard to visualize top attacker IPs and usernames.
+	•	Build an alert for >10 failed logins from the same IP within 1 minute.
+	•	Enrich attacker IPs with Threat Intelligence feeds (e.g., AbuseIPDB).
+
+---
 
 ✅ Aggregated table of attacker IPs and targeted usernames.
 Example result:
