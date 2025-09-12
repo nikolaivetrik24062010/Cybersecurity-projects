@@ -1,69 +1,107 @@
-# 🛡️ Cybersecurity Projects
-| Project | Description | Tools |
-|---------|-------------|-------|
-| [SOC Lab](./SOC-Lab) | Simulated SOC with SIEM, alerting, and IR playbooks | Splunk, Wazuh, ELK |
-| [Vulnerability Scanning](./Vulnerability-Scanning) | Scanning and reporting with remediation steps | Nmap, Nessus, OpenVAS |
-| [Threat Hunting](./Threat-Hunting) | Hunting with SIEM queries and Sysmon logs | Sigma, Sysmon, Windows Event Logs |
-| [Cloud Security](./Cloud-Security) | AWS IAM, CloudTrail, GuardDuty security projects | AWS Cloud |
+# 🧑‍💻 Hash Cracking Home Lab – TryHackMe *Hashing Basics*
 
-![Status](https://img.shields.io/badge/status-active-brightgreen)
-![Tools](https://img.shields.io/badge/tools-Splunk%2C%20Nmap%2C%20AWS-blue)
-![Focus](https://img.shields.io/badge/focus-cybersecurity-orange)
-
-Welcome to my cybersecurity portfolio.  
-Here I showcase hands-on projects built to strengthen my skills in **SOC analysis, threat hunting, vulnerability scanning, and cloud security**.  
-
-Each folder contains a separate project with its own documentation (`README.md`).
+This project follows the practice from the **Hashing Basics** room on TryHackMe.  
+We explored different types of hashes and learned how to recognize and crack them using **John the Ripper** and **Hashcat**.
 
 ---
 
-## 📂 Projects
+## 📂 Project Structure
 
-🔹 [**SOC Lab**](SOC-Lab/README.md)  
-Simulated Security Operations Center environment using SIEM tools (Splunk, ELK, Wazuh). Includes log collection, alerting, and incident response playbooks.
-
-🔹 [**Vulnerability Scanning**](Vulnerability-Scanning/README.md)  
-Scanning and assessing systems using **Nmap, OpenVAS, Nessus, and Nikto**. Includes remediation reporting.
-
-🔹 [**Threat Hunting**](Threat-Hunting/README.md)  
-Practical hunting scenarios with SIEM queries, Windows Event Logs, Sysmon, and Indicators of Compromise (IOCs).
-
-🔹 [**Cloud Security**](Cloud-Security/README.md)  
-Projects on **AWS security**: IAM best practices, CloudTrail, GuardDuty, and cloud vulnerability scanning.
+```
+Hashing-Basics/
+├── Task-6/
+│    ├── hash1.txt   # bcrypt ($2a$)
+│    ├── hash2.txt   # SHA-256
+│    ├── hash3.txt   # SHA-512crypt ($6$)
+│    ├── hash4.txt   # MD5
+│    └── rockyou.txt # wordlist
+```
 
 ---
 
-## 🛠️ Tools & Technologies
-
-- **SIEM**: Splunk, Wazuh, ELK  
-- **Scanning**: Nmap, OpenVAS, Nessus, Nikto  
-- **Threat Hunting**: Sysmon, Event Logs, Sigma Rules  
-- **Cloud**: AWS IAM, CloudTrail, GuardDuty  
-- **Other**: Linux, Python (for automation), GitHub
+## 🔑 Tools Used
+- **John the Ripper** — works in VM, CPU-based.
+- **Hashcat** — GPU optimized (but also works on CPU, slower).
 
 ---
 
-## ✅ Skills Demonstrated
-- SIEM log ingestion, alerting, and incident response  
-- Vulnerability scanning and remediation reporting  
-- Threat hunting with Sysmon, Event Logs, and IOCs  
-- Cloud security monitoring with AWS IAM, CloudTrail, GuardDuty  
-- Automation with Linux and Python  
+## 📝 Steps Completed
+
+### 1. bcrypt (hash1.txt)
+Example hash:
+```
+$2a$06$7yoU3Ng8dHTXphAg913cyO6Bjs3K5lBnwq5FJyA6d01pMSrddr1ZG
+```
+
+Command (John):
+```bash
+john --wordlist=/usr/share/wordlists/rockyou.txt --format=bcrypt hash1.txt
+john --show hash1.txt
+```
+
+✅ Result: password successfully cracked.
 
 ---
 
-## 🎯 Target Roles
-This portfolio demonstrates skills relevant for:
+### 2. SHA-256 (hash2.txt)
+Example hash:
+```
+9eb7ee7f551d2f0ac684981bd1f1e2fa4a37590199636753efe614d4db30e8e1
+```
 
-- **Security Analyst / SOC Analyst (Entry-Level)** – focus on monitoring, detection, and incident response  
-- **Security Engineer (Mid-Level)** – building and securing systems, automating processes  
-- **Cloud Security Engineer (Future Goal)** – securing cloud infrastructure (AWS, Azure, GCP)  
+Command (Hashcat):
+```bash
+hashcat -m 1400 -a 0 hash2.txt /usr/share/wordlists/rockyou.txt
+```
+
+✅ Result: password found → `halloween`.
 
 ---
 
-## 🔮 Future Work
-- Add SIEM correlation rules for Insider Threat scenarios  
-- Expand Cloud Security with Azure examples  
-- Automate vulnerability scans with Python  
+### 3. SHA-512crypt (hash3.txt)
+Example hash:
+```
+$6$GQXVvW4EuM$ehD6jWiMsfNorxy5SINsgdlxmAEl3.yif0/c3NqzGLa0P.S7KRDYjycw5bnYkF5ZtB8wQy8KnskuWQS3Yr1wQ0
+```
 
-📌 *I am continuously adding new projects as I progress in my cybersecurity career. Stay tuned!*
+Command (Hashcat):
+```bash
+hashcat -m 1800 -a 0 hash3.txt /usr/share/wordlists/rockyou.txt
+```
+
+⚙️ Status: cracking in progress.
+
+---
+
+### 4. MD5 (hash4.txt)
+Example hash:
+```
+b6b0d451bbf6fed658659a9e7e5598fe
+```
+
+Command (Hashcat):
+```bash
+hashcat -m 0 -a 0 hash4.txt /usr/share/wordlists/rockyou.txt
+```
+
+⚡ Expected result: MD5 is very fast, cracked almost instantly.
+
+---
+
+## 📊 Key Takeaways
+- Learned to identify hash types: **bcrypt**, **SHA-256**, **SHA-512crypt**, **MD5**.
+- Practiced syntax for both `john` and `hashcat`.
+- Fixed common mistakes (e.g., `--wordlist` vs `--wordlist=`, correct `-m` codes).
+- Produced reproducible examples for portfolio (commands + screenshots).
+
+---
+
+## 🚀 Next Steps
+- Add benchmarking (report hash cracking speed in H/s).
+- Try different attack modes:
+  - `-a 0` (wordlist)  
+  - `-a 3` (mask brute-force)  
+  - `-a 6/7` (hybrid attacks)  
+- Automate workflow with Bash/Python scripts.
+
+---
