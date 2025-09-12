@@ -44,11 +44,12 @@ john --show hash1.txt
 ---
 
 ### 2. SHA-256 (hash2.txt)
+
 Example hash:
 ```
 9eb7ee7f551d2f0ac684981bd1f1e2fa4a37590199636753efe614d4db30e8e1
 ```
-
+<img width="1352" height="878" alt="Screenshot 2025-09-11 at 8 29 50 PM" src="https://github.com/user-attachments/assets/e3e72afb-795f-4944-8df8-d6eae1291084" />
 Command (Hashcat):
 ```bash
 hashcat -m 1400 -a 0 hash2.txt /usr/share/wordlists/rockyou.txt
